@@ -10,9 +10,9 @@ writer.writeheader()
 
 
 def format_float(value):
-    """Truncates floats to 3 decimals."""
+    """Truncates floats to 3 decimals. And convert to kW"""
     if isinstance(value, float):
-        value = '{:.3f}'.format(value)
+        value = '{:.3f}'.format(value * 1e-3)
     return value
 
 
