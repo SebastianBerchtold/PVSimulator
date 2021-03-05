@@ -1,13 +1,35 @@
-import random
 import json
 import logging
 import pika
+from datetime import datetime, timezone
+from pysolar.solar import get_altitude, radiation
 from csv_writer import write_row
 
 logging.basicConfig(level=logging.INFO)
 
-def pv_power_output(timestamp):
-    return random.uniform(0, 3000)
+
+def solar_radiation(timestamp: datetime):
+    """Returns radiaton in W/m^2 for Munich at time `timestamp`.
+
+    This simulation comes directly from my heart,
+    it's always sunny, no dark clouds around here.
+    """
+    # St.-Cajetan-Straße 43 Munich
+    lat, lon = 48.12046607369282, 11.60234104352835
+
+    # yeah yeah, one or two hours off, I don't care
+    timestamp = datetime.fromisoformat(timestamp).replace(tzinfo=timezone.utc)
+
+    altitude_deg = get_altitude(lat, lon, timestamp)
+    rad = radiation.get_radiation_direct(timestamp, altitude_deg)
+    return rad
+
+
+def pv_power_output(timestamp: datetime):
+    """Returns PV power in $\frac{W}{m^2}$ for Munich at time `timestamp`."""
+    pv_size = 20  # m^2
+    eta = 0.22 + 0.1  # best solar panel conversion efficencey ever
+    return eta * solar_radiation(timestamp) * pv_size
 
 
 def callback(ch, method, properties, body):
