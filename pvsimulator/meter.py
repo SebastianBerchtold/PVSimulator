@@ -1,8 +1,14 @@
-import time
-import datetime
+import sys
 import json
 import random
 import pika
+import pandas as pd
+from time import sleep
+from datetime import datetime, timedelta, date, time
+
+
+RUN_REALTIME = (len(sys.argv) == 2 and
+                sys.argv[1] == "--realtime")
 
 
 def next_meter_value(value):
@@ -38,20 +44,35 @@ def send_meter_value(channel, timestamp, value):
 
 
 def simulate_power_meter(channel):
+    """Send values for a whole day, with 5s requency"""
+    meter_value = 10  # start value
+    today = date.today()
+    timestamps = pd.date_range(today, today + timedelta(days=1), freq='5s')
+    for t in timestamps:
+        meter_value = next_meter_value(meter_value)
+        send_meter_value(channel, t, meter_value)
+
+
+def simulate_power_meter_realtime(channel):
+    """Just send some random value, once a sec."""
     meter_value = 0  # power consumtion
     while True:
         meter_value = next_meter_value(meter_value)
-        send_meter_value(channel, datetime.datetime.now(), meter_value)
-        time.sleep(1.0)
+        send_meter_value(channel, datetime.now(), meter_value)
+        sleep(1.0)
 
 
 def run_meter():
-    """Setup RabbitMQ channel `meter` and publish some random shit."""
+    """Setup RabbitMQ channel and publish some random shit on queue `meter`."""
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
     channel.queue_declare(queue='meter')
 
-    simulate_power_meter(channel)
+    if RUN_REALTIME:
+        simulate_power_meter_realtime(channel)
+    else:
+        simulate_power_meter(channel)
+
     connection.close()
 
 

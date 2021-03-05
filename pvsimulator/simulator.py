@@ -20,8 +20,13 @@ def solar_radiation(timestamp: datetime):
     # yeah yeah, one or two hours off, I don't care
     timestamp = datetime.fromisoformat(timestamp).replace(tzinfo=timezone.utc)
 
-    altitude_deg = get_altitude(lat, lon, timestamp)
-    rad = radiation.get_radiation_direct(timestamp, altitude_deg)
+    try:  # for some reason this is failing, every once in a while
+        altitude_deg = get_altitude(lat, lon, timestamp)
+        rad = radiation.get_radiation_direct(timestamp, altitude_deg)
+    except OverflowError:
+        logging.info(f"Solar radiation calc failing for time {timestamp}")
+        rad = 0.0
+
     return rad
 
 
