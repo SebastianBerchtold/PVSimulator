@@ -64,7 +64,7 @@ def simulate_power_meter_realtime(channel):
 
 def run_meter():
     """Setup RabbitMQ channel and publish some random shit on queue `meter`."""
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
     channel = connection.channel()
     channel.queue_declare(queue='meter')
 

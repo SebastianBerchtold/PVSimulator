@@ -55,7 +55,7 @@ def run_simulator():
 
     For every recived message, lookup the corresponding PV value
     and write it to the `logs/output.csv` file"""
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
     channel = connection.channel()
     channel.queue_declare(queue='meter')
 

@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+
+  rabbitmq:
+    image: 'rabbitmq:3.6-management-alpine'
+    networks:
+      - rabbithole
+
+  meter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    networks:
+      - rabbithole
+    depends_on:
+      - rabbitmq
+    command: python3 pvsimulator/meter.py
+
+  pvsimulator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    networks:
+      - rabbithole
+    depends_on:
+      - rabbitmq
+    command: python3 pvsimulator/simulator.py
+
+networks:
+  rabbithole:
+    driver: bridge

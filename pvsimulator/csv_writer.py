@@ -1,7 +1,9 @@
+import os
 import csv
 
 # Init csv writer
-csvfile = open('logs/output.csv', 'w')
+os.makedirs("out/", exist_ok=True)
+csvfile = open('out/logs.csv', 'w')
 fieldnames = ['timestamp', 'meter_value', 'pv_value', 'sum']
 writer = csv.DictWriter(csvfile,
                         fieldnames=fieldnames,
