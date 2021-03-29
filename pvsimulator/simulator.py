@@ -18,6 +18,7 @@ def solar_radiation(timestamp: datetime):
     # St.-Cajetan-Straße 43 Munich
     lat, lon = 48.12046607369282, 11.60234104352835
 
+    # wrong, who cares?
     tz = pytz.timezone('Europe/Berlin')
     timestamp = datetime.fromisoformat(timestamp).replace(tzinfo=tz)
 
