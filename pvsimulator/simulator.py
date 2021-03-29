@@ -1,7 +1,8 @@
 import json
 import logging
 import pika
-from datetime import datetime, timezone
+import pytz
+from datetime import datetime
 from pysolar.solar import get_altitude, radiation
 from csv_writer import write_row
 
@@ -17,8 +18,8 @@ def solar_radiation(timestamp: datetime):
     # St.-Cajetan-Straße 43 Munich
     lat, lon = 48.12046607369282, 11.60234104352835
 
-    # yeah yeah, one or two hours off, I don't care
-    timestamp = datetime.fromisoformat(timestamp).replace(tzinfo=timezone.utc)
+    tz = pytz.timezone('Europe/Berlin')
+    timestamp = datetime.fromisoformat(timestamp).replace(tzinfo=tz)
 
     try:  # for some reason this is failing, every once in a while
         altitude_deg = get_altitude(lat, lon, timestamp)
