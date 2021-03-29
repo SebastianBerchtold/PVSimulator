@@ -1,6 +1,6 @@
 # PV Simulator
-This is some dummy program for a "homework" assignment for a job application.
-The "problem" description can be found [here](docs/PV Simulator Challenge.pdf).
+This was a "homework" assignment for a job application.
+The "problem" description can be found [here](docs/PVSimulatorChallenge.pdf).
 
 It basically consisted of two parts.
 1. A power meter that simulates power consumption, sending it's data to a RabbitMQ broker.
